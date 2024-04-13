@@ -89,8 +89,8 @@ function finalizarPedido(dineroIngresado) {
 
   // Mostrar el cambio al usuario
   //var cambio = dineroIngresado - totalPedidos;
-  document.getElementById('cambio').textContent =
-    'Cambio: ' + cambio.toFixed(2) + ' €';
+  //document.getElementById('cambio').textContent =
+  // 'Cambio: ' + cambio.toFixed(2) + ' €';
 
   // Actualizar el total de todos los pedidos
   actualizarTotalPedidos();
