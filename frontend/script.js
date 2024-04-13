@@ -88,7 +88,7 @@ function finalizarPedido(dineroIngresado) {
   actualizarPedido();
 
   // Mostrar el cambio al usuario
-  var cambio = dineroIngresado - totalPedidos;
+  //var cambio = dineroIngresado - totalPedidos;
   document.getElementById('cambio').textContent =
     'Cambio: ' + cambio.toFixed(2) + ' €';
 
