@@ -3,7 +3,8 @@ var productos = [];
 
 // Variables para llevar el seguimiento del pedido, el total y el resumen de productos
 var pedido = [];
-var total = 0;
+var totalActual = 0; // Total del pedido actual
+var totalPedidos = 0; // Total de todos los pedidos
 var resumenProductos = {}; // Resumen de productos consumidos
 
 function login() {
@@ -22,21 +23,21 @@ function login() {
 }
 
 function agregarProducto(nombre, precio) {
-  // Agrega el producto al pedido y actualiza el total
+  // Agrega el producto al pedido y actualiza el total del pedido actual
   pedido.push({ nombre: nombre, precio: precio });
-  total += precio;
+  totalActual += precio;
 
   // Actualiza el resumen de productos
   actualizarResumenProductos(nombre);
 
-  // Actualiza la visualización del pedido y el total
+  // Actualiza la visualización del pedido y el total del pedido actual
   actualizarPedido();
 }
 
 function eliminarUltimoProducto() {
   if (pedido.length > 0) {
     var ultimoProducto = pedido.pop();
-    total -= ultimoProducto.precio;
+    totalActual -= ultimoProducto.precio;
 
     // Actualiza el resumen de productos
     restarResumenProducto(ultimoProducto.nombre);
@@ -52,7 +53,7 @@ function ingresarDinero() {
     return;
   }
 
-  var cambio = dineroIngresado - total;
+  var cambio = dineroIngresado - totalActual;
   cambio = cambio.toFixed(2);
   if (cambio >= 0) {
     alert(
@@ -71,30 +72,34 @@ function ingresarDinero() {
 }
 
 function finalizarPedido(dineroIngresado) {
-  // Agregar el pedido completado a la lista de pedidos
+  // Agregar el pedido completado a la lista de pedidos y actualizar el total de todos los pedidos
   agregarPedido(
     new Date().getTime(),
     obtenerContenidoPedido(),
-    total.toFixed(2)
+    totalActual.toFixed(2)
   );
+  totalPedidos += totalActual;
+  totalActual = 0; // Reinicia el total del pedido actual
 
-  // Reiniciar el pedido y el total
+  // Reiniciar el pedido
   pedido = [];
-  total = 0;
 
   // Actualizar la visualización del pedido
   actualizarPedido();
 
   // Mostrar el cambio al usuario
-  var cambio = dineroIngresado - total;
+  var cambio = dineroIngresado - totalPedidos;
   document.getElementById('cambio').textContent =
     'Cambio: ' + cambio.toFixed(2) + ' €';
+
+  // Actualizar el total de todos los pedidos
+  actualizarTotalPedidos();
 }
 
 function reiniciarPedido() {
   pedido = []; // Vaciar el arreglo del pedido
-  total = 0; // Restablecer el total a cero
-  actualizarPedido(); // Actualizar la visualización del pedido y el total
+  totalActual = 0; // Reinicia el total del pedido actual
+  actualizarPedido(); // Actualizar la visualización del pedido
 }
 
 function actualizarPedido() {
@@ -111,8 +116,8 @@ function actualizarPedido() {
     pedidoList.appendChild(li);
   });
 
-  // Actualiza el total
-  totalElement.textContent = total.toFixed(2);
+  // Calcula y actualiza el total del pedido actual
+  totalElement.textContent = totalActual.toFixed(2);
   document.getElementById('cambio').textContent = '';
 }
 
@@ -187,4 +192,10 @@ function restarResumenProducto(nombreProducto) {
     cellProducto.textContent = producto;
     cellCantidad.textContent = resumenProductos[producto];
   }
+}
+
+function actualizarTotalPedidos() {
+  var totalPedidosElement = document.getElementById('total-pedidos');
+  var mensaje = `Total de pedidos de hoy es: ${totalPedidos.toFixed(2)} €`;
+  totalPedidosElement.textContent = mensaje;
 }
